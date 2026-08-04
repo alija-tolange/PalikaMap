@@ -1,1 +1,22 @@
-node_modules/.env
+# Root
+node_modules/
+.env
+
+# Backend
+backend/node_modules/
+backend/.env
+
+# Frontend (if applicable)
+frontend/node_modules/
+frontend/.env
+
+# Build folders
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
