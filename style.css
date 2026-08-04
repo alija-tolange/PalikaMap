@@ -27,120 +27,142 @@
     max-width:1440px;
     height:100vh;
     margin:0 auto;
-    padding:14px 24px 14px;
+    padding:8px 24px 8px;
     display:flex;
     flex-direction:column;
+  }
+
+  /* ============ Stage ============ */
+  /* Everything except the title bar (.topbar) lives here. The map fills
+     the stage edge-to-edge; the toolbar (category/admin filters) floats
+     on top of it as an absolutely-positioned overlay instead of pushing
+     the map down, so the map is only ever hidden behind the title row. */
+  .stage{
+    flex:1;
+    min-height:0;
+    position:relative;
+  }
+  .stage > .toolbar{
+    position:absolute;
+    top:10px; left:10px; right:10px;
+    z-index:30;
+    margin-bottom:0;
+    pointer-events:none; /* let clicks fall through the empty gaps to the map */
+  }
+  .stage > .toolbar > *{ pointer-events:auto; }
+  .stage > .grid{
+    position:absolute;
+    inset:0;
   }
 
   /* ============ Top bar ============ */
   .topbar{
     flex:none;
     display:flex;
-    align-items:flex-start;
+    align-items:center;
     justify-content:space-between;
     gap:24px;
     flex-wrap:wrap;
-    padding-bottom:12px;
+    padding-bottom:8px;
     border-bottom:1px solid var(--line);
-    margin-bottom:10px;
+    margin-bottom:6px;
   }
-  .brand{display:flex; align-items:center; gap:16px;}
+  .brand{display:flex; align-items:center; gap:12px;}
   .seal{
-    width:56px; height:56px; flex:none;
+    width:38px; height:38px; flex:none;
     border-radius:50%;
     background:#fff;
-    border:2px solid var(--gold);
+    border:1.5px solid var(--gold);
     display:flex; align-items:center; justify-content:center;
     overflow:hidden;
-    box-shadow: inset 0 0 0 3px rgba(255,255,255,.06), var(--shadow);
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,.06), var(--shadow);
   }
   .seal img{
     width:100%; height:100%;
     object-fit:cover;
   }
   .brand-eyebrow{
-    margin:0 0 2px;
+    margin:0;
     font-family:'Zilla Slab',serif;
-    font-size:13px;
+    font-size:10.5px;
     color:var(--gold);
     letter-spacing:.03em;
+    line-height:1.1;
   }
   .brand-text h1{
     margin:0;
     font-family:'Zilla Slab',serif;
     font-weight:700;
-    font-size:28px;
+    font-size:19px;
     color:var(--navy);
     letter-spacing:.01em;
+    line-height:1.2;
   }
   .brand-sub{
-    margin:4px 0 0;
-    font-size:12.5px;
+    margin:1px 0 0;
+    font-size:10px;
     font-weight:600;
-    letter-spacing:.16em;
+    letter-spacing:.14em;
     color:var(--slate);
     text-transform:uppercase;
+    line-height:1.1;
   }
 
   .topbar-right{
-    display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap;
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
   }
 
-  .stats-strip{ display:flex; gap:12px; flex-wrap:wrap; }
-  .stat-card{
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:10px 18px;
-    min-width:118px;
-    box-shadow:var(--shadow);
-  }
-  .stat-card .stat-value{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:22px;
-    font-weight:500;
-    color:var(--navy);
-    line-height:1.1;
-  }
-  .stat-card .stat-label{
-    font-size:11px;
-    color:var(--slate);
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    margin-top:3px;
-  }
-
-  /* ============ Ward selector ============ */
-  .ward-wrap{ position:relative; }
-  .ward-btn{
-    display:flex; align-items:center; gap:8px;
+  /* ============ Admin dropdown selectors (Province / District / Ward) ============ */
+  .dd-wrap{ position:relative; }
+  .dd-btn{
+    display:flex; align-items:center; gap:6px;
     background:var(--panel);
     color:var(--navy);
     border:1px solid var(--blue);
-    padding:10px 16px;
-    border-radius:9px;
+    padding:7px 12px;
+    border-radius:8px;
     font-family:'Inter',sans-serif;
     font-weight:600;
-    font-size:14px;
+    font-size:13px;
     cursor:pointer;
     box-shadow:var(--shadow);
-    transition:background .15s ease, transform .1s ease;
+    transition:background .15s ease, transform .1s ease, opacity .15s ease;
   }
-  .ward-btn:hover{ background:#E7F0FA; }
-  .ward-btn:active{ transform:translateY(1px); }
-  .ward-btn .ward-icon{ color:var(--blue); flex:none; }
-  .ward-btn .chev{ transition:transform .18s ease; color:var(--blue); flex:none; }
-  .ward-btn.open .chev{ transform:rotate(180deg); }
-  .ward-btn.active-filter{ background:var(--blue); color:#fff; border-color:var(--blue-dark); }
-  .ward-btn.active-filter .ward-icon,
-  .ward-btn.active-filter .chev{ color:#fff; }
+  .dd-btn:hover{ background:#E7F0FA; }
+  .dd-btn:active{ transform:translateY(1px); }
+  .dd-btn span{ max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .dd-btn .dd-icon{ color:var(--blue); flex:none; }
+  .dd-btn .chev{ transition:transform .18s ease; color:var(--blue); flex:none; }
+  .dd-btn.open .chev{ transform:rotate(180deg); }
+  .dd-btn.active-filter{ background:var(--blue); color:#fff; border-color:var(--blue-dark); }
+  .dd-btn.active-filter .dd-icon,
+  .dd-btn.active-filter .chev{ color:#fff; }
 
-  .ward-panel{
+  /* Disabled until the level above it has been picked (Province -> District -> Ward) */
+  .dd-btn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+    background:var(--panel);
+    box-shadow:none;
+  }
+  .dd-btn:disabled:hover{ background:var(--panel); }
+
+  /* Brief shake to nudge the person toward the level they still need to pick */
+  @keyframes dd-nudge{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-4px); }
+    40%{ transform:translateX(4px); }
+    60%{ transform:translateX(-3px); }
+    80%{ transform:translateX(3px); }
+  }
+  .dd-btn.nudge{ animation:dd-nudge .5s ease; border-color:var(--red); }
+
+  .dd-panel{
     position:absolute;
     top:calc(100% + 10px);
     right:0;
-    width:260px;
-    max-height:440px;
+    width:200px;
+    max-height:230px;
     background:var(--panel);
     border:1px solid var(--line);
     border-radius:12px;
@@ -150,40 +172,54 @@
     display:flex;
     flex-direction:column;
   }
-  .ward-panel.hidden{ display:none; }
-  .ward-panel-head{
-    padding:13px 16px 11px;
+  .dd-panel.hidden{ display:none; }
+  .dd-panel-head{
+    padding:10px 13px 9px;
     border-bottom:1px solid var(--line);
     display:flex; align-items:center; justify-content:space-between;
   }
-  .ward-panel-head span{ font-size:13px; font-weight:700; color:var(--navy); }
-  .ward-list{ overflow-y:auto; padding:6px; display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
-  .ward-chip{
+  .dd-panel-head span{ font-size:12px; font-weight:700; color:var(--navy); }
+  .dd-list{ overflow-y:auto; padding:5px; display:grid; grid-template-columns:1fr; gap:4px; max-height:184px; }
+  .dd-list.ward-list{ grid-template-columns:repeat(3,1fr); }
+  .dd-empty{
+    padding:14px 10px;
+    text-align:center;
+    font-size:12px;
+    color:var(--slate);
+    font-style:italic;
+  }
+  .dd-chip{
     display:flex; align-items:center; justify-content:center;
-    padding:9px 6px;
-    border-radius:8px;
+    padding:6px 8px;
+    border-radius:7px;
     border:1px solid var(--line);
     background:var(--paper);
     color:var(--ink);
-    font-family:'IBM Plex Mono',monospace;
-    font-size:13px; font-weight:600;
+    font-family:'Inter',sans-serif;
+    font-size:12px; font-weight:600;
+    text-align:center;
     cursor:pointer;
     transition:background .12s ease, border-color .12s ease, color .12s ease;
   }
-  .ward-chip:hover{ background:#E7F0FA; border-color:var(--blue); }
-  .ward-chip.selected{ background:var(--blue); border-color:var(--blue-dark); color:#fff; }
+  .dd-list.ward-list .dd-chip{ font-family:'IBM Plex Mono',monospace; padding:7px 5px; }
+  /* Slim scrollbar so the compact list doesn't feel cramped */
+  .dd-list::-webkit-scrollbar{ width:6px; }
+  .dd-list::-webkit-scrollbar-thumb{ background:var(--line); border-radius:3px; }
+  .dd-list::-webkit-scrollbar-thumb:hover{ background:var(--slate-soft); }
+  .dd-chip:hover{ background:#E7F0FA; border-color:var(--blue); }
+  .dd-chip.selected{ background:var(--blue); border-color:var(--blue-dark); color:#fff; }
 
   /* ============ Refresh button ============ */
   .refresh-btn{
-    display:flex; align-items:center; gap:7px;
+    display:flex; align-items:center; gap:6px;
     background:var(--panel);
     color:var(--slate);
     border:1px solid var(--line);
-    padding:10px 14px;
-    border-radius:9px;
+    padding:7px 12px;
+    border-radius:8px;
     font-family:'Inter',sans-serif;
     font-weight:600;
-    font-size:14px;
+    font-size:13px;
     cursor:pointer;
     box-shadow:var(--shadow);
     transition:background .15s ease, transform .1s ease, color .15s ease, border-color .15s ease;
@@ -197,15 +233,15 @@
   /* ============ Top 10 leaderboard ============ */
   .leaderboard-wrap{ position:relative; }
   .leaderboard-btn{
-    display:flex; align-items:center; gap:8px;
+    display:flex; align-items:center; gap:6px;
     background:var(--panel);
     color:var(--navy);
     border:1px solid var(--gold);
-    padding:10px 16px;
-    border-radius:9px;
+    padding:7px 12px;
+    border-radius:8px;
     font-family:'Inter',sans-serif;
     font-weight:600;
-    font-size:14px;
+    font-size:13px;
     cursor:pointer;
     box-shadow:var(--shadow);
     transition:background .15s ease, transform .1s ease;
@@ -274,23 +310,72 @@
   .toolbar{
     flex:none;
     display:flex;
-    align-items:flex-start;
-    gap:14px;
-    flex-wrap:wrap;
-    margin-bottom:12px;
+    flex-direction:column;
+    gap:6px;
+    margin-bottom:8px;
     position:relative;
   }
+  .toolbar-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .toolbar-row-2{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
   .category-wrap{ position:relative; }
+
+  /* Two small floating cards, top-right of the map — one for total
+     contributions, one for total contributors, for whatever scope is
+     currently selected. Kept as separate compact tiles, not one box. */
+  .mini-stats{
+    position:absolute;
+    top:14px; right:14px;
+    z-index:20;
+    display:flex; flex-direction:row; gap:8px;
+  }
+  .mini-stat{
+    display:flex; flex-direction:column; align-items:flex-start; gap:3px;
+    background:rgba(255,255,255,.97);
+    border:1px solid var(--line);
+    border-radius:10px;
+    box-shadow:0 10px 26px -10px rgba(15,42,68,.3);
+    padding:7px 12px;
+    min-width:100px;
+    max-width:150px;
+  }
+  .mini-stat .mini-stat-label{
+    font-size:9.5px;
+    font-weight:600;
+    color:var(--slate);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    line-height:1.25;
+  }
+  .mini-stat .mini-stat-value{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:15px;
+    font-weight:700;
+    color:var(--navy);
+  }
+
+
+  .admin-controls{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+
   .category-btn{
-    display:flex; align-items:center; gap:9px;
+    display:flex; align-items:center; gap:7px;
     background:var(--navy);
     color:#fff;
     border:none;
-    padding:11px 18px;
-    border-radius:9px;
+    padding:7px 14px;
+    border-radius:8px;
     font-family:'Inter',sans-serif;
     font-weight:600;
-    font-size:14.5px;
+    font-size:13px;
     cursor:pointer;
     box-shadow:var(--shadow);
     transition:background .15s ease, transform .1s ease;
@@ -361,7 +446,7 @@
   .cat-name{ font-size:13.5px; font-weight:600; color:var(--ink); }
   .cat-count{ font-size:11.5px; color:var(--slate-soft); font-family:'IBM Plex Mono',monospace; }
 
-  .active-chips{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding-top:9px; }
+  .active-chips{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
   .chip{
     display:flex; align-items:center; gap:6px;
     background:var(--panel);
@@ -379,10 +464,6 @@
     font-size:13px; line-height:1; padding:0 0 0 2px;
   }
   .chip button:hover{ color:var(--red); }
-  .toolbar-hint{
-    font-size:12.5px; color:var(--slate-soft); padding-top:11px;
-  }
-
   /* ============ Main grid ============ */
   /* The map now fills the entire grid area edge-to-edge, and the
      Contributor Records panel floats above it as an overlay card
@@ -398,7 +479,7 @@
 
   .resizer{
     position:absolute;
-    top:14px; bottom:14px;
+    top:92px; height:420px;
     right:394px; /* left edge of the floating table panel (380px width + 14px gap); kept in sync by JS while dragging/resizing */
     width:14px;
     z-index:6;
@@ -464,19 +545,68 @@
   .table-panel{
     display:flex; flex-direction:column;
     position:absolute;
-    top:14px; right:14px; bottom:14px;
+    top:92px; right:14px;
     width:380px;
+    height:420px;
     min-height:0;
     z-index:5;
     box-shadow:0 24px 50px -18px rgba(15,42,68,.5), 0 2px 10px rgba(15,42,68,.16);
+    transition:width .22s ease;
   }
+  /* Fully hidden until at least one category is selected — no trace, no tab */
+  .table-panel.hidden{ display:none; }
+
+  /* Collapsed via the toggle button on the panel itself — shrinks to a
+     slim bar with just the title (vertical) and the expand control. */
+  .table-panel.collapsed{ width:52px; }
+  .table-panel.collapsed .table-panel-head{
+    flex-direction:column; justify-content:flex-start;
+    padding:16px 6px; gap:14px;
+  }
+  .table-panel.collapsed .table-panel-head input{ display:none; }
+  .table-panel.collapsed .table-panel-head h2{
+    writing-mode:vertical-rl; text-orientation:mixed;
+    font-size:13px; white-space:nowrap; transform:rotate(180deg);
+  }
+  .table-panel.collapsed .table-scroll,
+  .table-panel.collapsed .scroll-hint,
+  .table-panel.collapsed .table-footer,
+  .table-panel.collapsed .panel-close-btn{ display:none; }
+  .table-panel.collapsed .panel-collapse-btn .collapse-icon{ transform:rotate(180deg); }
+
+  .resizer.hidden{ display:none; }
+
+  @media (max-width:980px){
+    .table-panel.collapsed{ width:100% !important; height:52px; }
+    .table-panel.collapsed .table-panel-head{ flex-direction:row; padding:10px 16px; gap:10px; }
+    .table-panel.collapsed .table-panel-head h2{ writing-mode:horizontal-tb; transform:none; }
+  }
+
   .table-panel-head{
     display:flex; align-items:center; justify-content:space-between; gap:10px;
     padding:16px 18px 12px;
     border-bottom:1px solid var(--line);
   }
+  .panel-collapse-btn{
+    display:flex; align-items:center; justify-content:center;
+    width:26px; height:26px; flex:none;
+    background:none; border:1px solid var(--line); border-radius:7px;
+    color:var(--slate); cursor:pointer;
+    transition:background .12s ease, color .12s ease, border-color .12s ease;
+  }
+  .panel-collapse-btn:hover{ background:var(--paper); color:var(--navy); border-color:var(--blue); }
+  .panel-collapse-btn .collapse-icon{ transition:transform .2s ease; }
+  .panel-close-btn{
+    display:flex; align-items:center; justify-content:center;
+    width:26px; height:26px; flex:none;
+    background:none; border:1px solid var(--line); border-radius:7px;
+    color:var(--slate); cursor:pointer;
+    transition:background .12s ease, color .12s ease, border-color .12s ease;
+  }
+  .panel-close-btn:hover{ background:#FBE9E9; color:var(--red); border-color:var(--red); }
   .table-panel-head h2{
     margin:0; font-family:'Zilla Slab',serif; font-size:17px; color:var(--navy); font-weight:600;
+    flex:1; min-width:0;
   }
   .table-panel-head input{
     border:1px solid var(--line);
@@ -489,21 +619,8 @@
   }
   .table-panel-head input:focus{ border-color:var(--blue); }
 
-  .table-empty{
-    flex:1;
-    display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
-    gap:8px; color:var(--slate-soft); text-align:center; padding:36px 30px 20px;
-  }
-  .table-empty .empty-icon{
-    width:40px; height:40px; border-radius:50%;
-    background:var(--paper); display:flex; align-items:center; justify-content:center;
-    color:var(--slate-soft); border:1px solid var(--line);
-  }
-  .table-empty p{ margin:0; font-size:12.5px; max-width:210px; line-height:1.5; }
-
   .table-scroll{ flex:1; min-height:0; overflow-y:hidden; cursor:pointer; }
   .table-scroll.scroll-unlocked{ overflow-y:auto; cursor:default; }
-  .table-scroll.hidden{ display:none; }
 
   .scroll-hint{
     position:absolute;
@@ -569,18 +686,84 @@
     display:flex; justify-content:space-between;
   }
 
-  .leaflet-popup-content{ font-family:'Inter',sans-serif; font-size:13px; min-width:170px; }
+  .leaflet-popup-content{ font-family:'Inter',sans-serif; font-size:13px; margin:11px 15px; }
   .popup-cat{
     display:inline-flex; align-items:center; gap:5px;
     font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;
     margin-bottom:4px;
   }
-  .popup-name{ font-weight:700; font-size:14.5px; color:var(--navy); margin:0 0 2px; }
+  .popup-name{ font-weight:700; font-size:14.5px; color:var(--navy); margin:0 0 4px; }
   .popup-contributor{ color:var(--slate-soft); font-size:12px; margin:0 0 4px; }
   .popup-addr{ color:var(--slate); margin:0 0 6px; }
+  .popup-addr-loading{ color:var(--slate-soft); font-style:italic; }
   .popup-points{ font-family:'IBM Plex Mono',monospace; color:var(--green); font-weight:600; }
 
+  /* ---- Reverse-geocode popup (click anywhere on the map) ---- */
+  .geo-popup{ min-width:170px; }
+  .geo-popup .popup-name{ font-size:13.5px; margin-bottom:6px; }
+  .geo-popup-rows{ display:flex; flex-direction:column; gap:3px; margin-bottom:6px; }
+  .geo-popup-row{
+    display:flex; justify-content:space-between; gap:12px;
+    font-size:12px; color:var(--slate);
+  }
+  .geo-popup-row span:first-child{ color:var(--slate-soft); font-weight:600; }
+  .geo-popup-row span:last-child{ color:var(--ink); text-align:right; }
+  .geo-popup-coords{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px; color:var(--slate-soft);
+    padding-top:5px; margin-top:2px;
+    border-top:1px solid var(--line);
+  }
+  .geo-popup-loading{
+    display:flex; align-items:center; gap:8px;
+    font-size:12.5px; color:var(--slate);
+  }
+  .geo-popup-error{ font-size:12.5px; color:var(--red); }
+  .geo-spinner{
+    width:13px; height:13px; flex:none;
+    border:2px solid var(--line);
+    border-top-color:var(--blue);
+    border-radius:50%;
+    animation:geo-spin .7s linear infinite;
+  }
+  @keyframes geo-spin{ to{ transform:rotate(360deg); } }
+
+  /* Popup layout: main text block on the left, photo panel slides open
+     to the right, connected to the same popup bar. */
+  .popup-wrap{ display:flex; align-items:stretch; }
+  .popup-main{ min-width:168px; flex:none; }
+  .popup-photo-btn{
+    display:inline-flex; align-items:center; gap:5px;
+    background:none; border:none; padding:0; margin:0 0 6px;
+    font-family:'Inter',sans-serif; font-size:12.5px; font-weight:600;
+    color:var(--blue); cursor:pointer;
+  }
+  .popup-photo-btn:hover{ color:var(--blue-dark); text-decoration:underline; }
+  .popup-photo-panel{
+    width:0; max-width:0; overflow:hidden; opacity:0;
+    flex:none;
+    transition:max-width .22s ease, opacity .18s ease, margin .22s ease, padding .22s ease;
+  }
+  .popup-photo-panel.open{
+    max-width:120px; width:120px; opacity:1;
+    margin-left:12px; padding-left:12px;
+    border-left:1px solid var(--line);
+  }
+  .popup-photo-panel img{
+    display:block; width:110px; height:92px;
+    object-fit:cover; border-radius:8px;
+    border:1px solid var(--line);
+  }
+
   /* ============ Leaflet control theming (professional / gov style) ============ */
+  /* The toolbar (Category / Province / District / … buttons) floats on top
+     of the map at top:10px; left:10px — the same corner Leaflet uses for its
+     default zoom control, so the two were stacking on top of each other and
+     the toolbar (higher z-index) was covering the zoom buttons. Push the
+     whole top-left control group down below the toolbar row so it's clear. */
+  .leaflet-top.leaflet-left{
+    top:56px !important;
+  }
   .leaflet-control-zoom{
     border:1px solid var(--line) !important;
     box-shadow:var(--shadow) !important;
@@ -599,4 +782,13 @@
     font-size:10.5px !important;
     background:rgba(255,255,255,.85) !important;
     color:var(--slate) !important;
+  }
+
+  /* Chrome/Edge draw a default focus outline (a black bounding-box
+     rectangle) around SVG path elements — like the ward polygons —
+     when they're clicked, since Leaflet makes them keyboard-focusable.
+     This removes that outline everywhere on the map. */
+  .leaflet-container path:focus,
+  .leaflet-interactive:focus{
+    outline:none !important;
   }
